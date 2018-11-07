@@ -1,5 +1,6 @@
 package com.udacity.gradle.builditbigger;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,8 @@ import com.example.jokeprovider.Jokes;
 import com.example.showjokes.ShowJokeActivity;
 
 public class MainActivity extends AppCompatActivity {
+
+    public Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +47,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-        Jokes jokes = new Jokes();
+        new EndpointsAsyncTask(this).execute();
+
+/*        Jokes jokes = new Jokes();
         Intent intent = new Intent(this, ShowJokeActivity.class);
         intent.putExtra(ShowJokeActivity.JOKE_EXTRA, jokes.getJoke());
-        startActivity(intent);
+        startActivity(intent);*/
 
-        Toast.makeText(this, jokes.getJoke(), Toast.LENGTH_SHORT).show();
     }
-
-
 }
