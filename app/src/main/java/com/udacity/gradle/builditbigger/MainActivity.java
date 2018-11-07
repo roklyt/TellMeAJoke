@@ -3,26 +3,38 @@ package com.udacity.gradle.builditbigger;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import com.example.showjokes.ShowJokeActivity;
 
+
 public class MainActivity extends AppCompatActivity {
 
+    private static InterstitialAd mInterstitialAd;
+
     public Context context;
-    private static ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mInterstitialAd = new InterstitialAd(getApplicationContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
         setContentView(R.layout.activity_main);
 
         progressBar = findViewById(R.id.progressBar);
-
 
     }
 
@@ -54,15 +66,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPreExecute(){
                 progressBar.setVisibility(View.VISIBLE);
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
             }
 
 
             @Override
             protected void onPostExecute(String result){
                 progressBar.setVisibility(View.GONE);
+
+
                 Intent intent = new Intent(getApplicationContext(), ShowJokeActivity.class);
                 intent.putExtra(ShowJokeActivity.JOKE_EXTRA, result);
                 getApplication().startActivity(intent);
+
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    Toast.makeText(getApplicationContext(),"The interstitial wasn't loaded yet.",Toast.LENGTH_LONG );
+                }
             }
         }.execute();
     }
