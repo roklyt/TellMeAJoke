@@ -20,11 +20,6 @@ import java.io.IOException;
 
 public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
     private static MyApi myApiService = null;
-    private Context context;
-
-    public EndpointsAsyncTask(Context context) {
-        this.context = context;
-    }
 
     @Override
     protected void onPreExecute() {
@@ -61,9 +56,5 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
     }
 
     @Override
-    protected void onPostExecute(String result) {
-        Intent intent = new Intent(context, ShowJokeActivity.class);
-        intent.putExtra(ShowJokeActivity.JOKE_EXTRA, result);
-        context.startActivity(intent);
-    }
+    protected void onPostExecute(String result) {}
 }
