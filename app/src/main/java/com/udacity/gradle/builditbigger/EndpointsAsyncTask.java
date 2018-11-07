@@ -4,12 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Pair;
-import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
 
 
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
@@ -27,6 +24,11 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
 
     public EndpointsAsyncTask(Context context) {
         this.context = context;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
     }
 
     @Override
@@ -63,6 +65,5 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
         Intent intent = new Intent(context, ShowJokeActivity.class);
         intent.putExtra(ShowJokeActivity.JOKE_EXTRA, result);
         context.startActivity(intent);
-        //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
     }
 }
