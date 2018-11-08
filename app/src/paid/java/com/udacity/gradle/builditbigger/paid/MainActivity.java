@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.showjokes.ShowJokeActivity;
 import com.udacity.gradle.builditbigger.EndpointsAsyncTask;
@@ -53,23 +54,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-        new EndpointsAsyncTask(){
-            @Override
-            protected void onPreExecute(){
-                progressBar.setVisibility(View.VISIBLE);
-            }
+            progressBar.setVisibility(View.VISIBLE);
 
+            EndpointsAsyncTask someTask = new EndpointsAsyncTask(new EndpointsAsyncTask.OnEventListener<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    progressBar.setVisibility(View.GONE);
 
-            @Override
-            protected void onPostExecute(String result){
-                progressBar.setVisibility(View.GONE);
+                    Intent intent = new Intent(getApplicationContext(), ShowJokeActivity.class);
+                    intent.putExtra(ShowJokeActivity.JOKE_EXTRA, result);
+                    getApplication().startActivity(intent);
+                }
 
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(getApplicationContext(), R.string.load_joke_error, Toast.LENGTH_LONG).show();
+                }
+            });
+            someTask.execute();
+        }
 
-                Intent intent = new Intent(getApplicationContext(), ShowJokeActivity.class);
-                intent.putExtra(ShowJokeActivity.JOKE_EXTRA, result);
-                getApplication().startActivity(intent);
-
-            }
-        }.execute();
-    }
 }

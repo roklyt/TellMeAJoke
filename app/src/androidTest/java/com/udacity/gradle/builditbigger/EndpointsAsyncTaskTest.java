@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 public class EndpointsAsyncTaskTest {
 
     @Test
-    public void onPostExecute() {
+    public void getAJoke_ReceiveNull_IfThereIsNoJoke() {
 
         try{
             EndpointsAsyncTask endpointsAsyncTask = new EndpointsAsyncTask();

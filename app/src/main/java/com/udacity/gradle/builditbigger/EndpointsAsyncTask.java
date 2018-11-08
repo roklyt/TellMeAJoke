@@ -1,10 +1,9 @@
 package com.udacity.gradle.builditbigger;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Pair;
-
+import android.util.Log;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
@@ -13,17 +12,16 @@ import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
 
-import com.example.showjokes.ShowJokeActivity;
-
-
 import java.io.IOException;
 
 public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
     private static MyApi myApiService = null;
+    private final static String TAG = EndpointsAsyncTask.class.getSimpleName();
+    private OnEventListener<String> mCallBack;
+    public Exception mException;
 
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
+    public EndpointsAsyncTask(OnEventListener callback) {
+        mCallBack = callback;
     }
 
     @Override
@@ -51,10 +49,25 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
         try {
             return myApiService.sayHi(name).execute().getData();
         } catch (IOException e) {
-            return e.getMessage();
+            mException = e;
+            Log.e(TAG,"doInBackground: "  + e);
+            return null;
         }
     }
 
     @Override
-    protected void onPostExecute(String result) {}
+    protected void onPostExecute(String result) {
+        if (mCallBack != null) {
+            if (mException == null) {
+                mCallBack.onSuccess(result);
+            } else {
+                mCallBack.onFailure(mException);
+            }
+        }
+    }
+
+    public interface OnEventListener<T> {
+        public void onSuccess(T object);
+        public void onFailure(Exception e);
+    }
 }

@@ -3,7 +3,7 @@ package com.udacity.gradle.builditbigger.free;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +22,7 @@ import com.udacity.gradle.builditbigger.R;
 public class MainActivity extends AppCompatActivity {
 
     private static InterstitialAd mInterstitialAd;
-
+    private static final String TAG = MainActivity.class.getSimpleName();
     public Context context;
     private ProgressBar progressBar;
 
@@ -64,18 +64,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-        new EndpointsAsyncTask(){
-            @Override
-            protected void onPreExecute(){
-                progressBar.setVisibility(View.VISIBLE);
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
+        progressBar.setVisibility(View.VISIBLE);
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-
+        EndpointsAsyncTask someTask = new EndpointsAsyncTask(new EndpointsAsyncTask.OnEventListener<String>() {
             @Override
-            protected void onPostExecute(String result){
+            public void onSuccess(String result) {
                 progressBar.setVisibility(View.GONE);
-
 
                 Intent intent = new Intent(getApplicationContext(), ShowJokeActivity.class);
                 intent.putExtra(ShowJokeActivity.JOKE_EXTRA, result);
@@ -84,9 +79,15 @@ public class MainActivity extends AppCompatActivity {
                 if (mInterstitialAd.isLoaded()) {
                     mInterstitialAd.show();
                 } else {
-                    Toast.makeText(getApplicationContext(),"The interstitial wasn't loaded yet.",Toast.LENGTH_LONG );
+                    Log.e(TAG, "The interstitial wasn't loaded yet.");
                 }
             }
-        }.execute();
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(getApplicationContext(), R.string.load_joke_error, Toast.LENGTH_LONG).show();
+            }
+        });
+        someTask.execute();
     }
 }
