@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+
 import com.example.showjokes.ShowJokeActivity;
 import com.udacity.gradle.builditbigger.EndpointsAsyncTask;
 import com.udacity.gradle.builditbigger.R;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Exception e) {
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(getApplicationContext(), R.string.load_joke_error, Toast.LENGTH_LONG).show();
                 }
             });

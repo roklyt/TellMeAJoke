@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), R.string.load_joke_error, Toast.LENGTH_LONG).show();
             }
         });
